@@ -85,6 +85,7 @@ type Wechat struct {
 	Log           *log.Logger
 	MemberMap     map[string]Member
 	ChatSet       []string
+	Cookies       []*http.Cookie
 
 	AutoReply    bool     //是否自动回复
 	ReplyMsgs    []string // 回复的消息列表
@@ -285,6 +286,8 @@ func (w *Wechat) Login() (err error) {
 	if err = xml.NewDecoder(reader).Decode(w.Request); err != nil {
 		return
 	}
+	// 提取cookie
+	w.Cookies = resp.Cookies()
 
 	w.Request.DeviceID = w.DeviceId
 

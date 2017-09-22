@@ -15,6 +15,7 @@ var (
 	}
 
 	SyncHosts = []string{
+		"webpush.wx.qq.com",
 		"wx2.qq.com",
 		"webpush.wx2.qq.com",
 		"wx8.qq.com",
@@ -29,7 +30,6 @@ var (
 		"webpush.wechat.com",
 		"webpush1.wechat.com",
 		"webpush2.wechat.com",
-		"webpush.wx.qq.com",
 		"webpush2.wx.qq.com",
 	}
 )
