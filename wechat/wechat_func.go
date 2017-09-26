@@ -160,6 +160,8 @@ func (w *Wechat) SyncDaemon(msgIn chan Message) {
 					msg.Content = strings.Replace(msg.Content, "&lt;", "<", -1)
 					msg.Content = strings.Replace(msg.Content, "&gt;", ">", -1)
 					msg.Content = strings.Replace(msg.Content, " ", " ", 1)
+					msg.MsgId = m.(map[string]interface{})["MsgId"].(string)
+					msg.CreateTime = m.(map[string]interface{})["CreateTime"].(float64)
 					switch msg.MsgType {
 					case 1:
 

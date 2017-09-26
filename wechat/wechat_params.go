@@ -41,6 +41,8 @@ type Message struct {
 	FileSize             string
 	FromUserNickName     string
 	ToUserNickName       string
+	CreateTime           float64
+	MsgId                string
 }
 
 func (m Message) String() string {
