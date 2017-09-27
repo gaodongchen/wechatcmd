@@ -131,7 +131,7 @@ func (w *Wechat) SyncDaemon(msgIn chan Message) {
 			w.Log.Println("从微信上登出")
 		case 1101:
 			w.Log.Println("从其他设备上登陆")
-			break
+			return
 		case 0:
 			switch resp.Selector {
 			case 2, 3: //有消息,未知
