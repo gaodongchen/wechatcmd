@@ -19,11 +19,10 @@ import (
 func (w *Wechat) GetContacts() (err error) {
 
 	name, resp := "webwxgetcontact", new(MemberResp)
-	apiURI := fmt.Sprintf("%s/%s?pass_ticket=%s&skey=%s&r=%s", w.BaseUri, name, w.Request.PassTicket, w.Request.Skey, w.GetUnixTime())
+	apiURI := fmt.Sprintf("%s/%s?pass_ticket=%s&skey=%s&r=%d", w.BaseUri, name, w.Request.PassTicket, w.Request.Skey, w.GetUnixTime())
 	if err := w.Send(apiURI, nil, resp); err != nil {
 		return err
 	}
-
 	w.MemberList = resp.MemberList
 	w.TotalMember = resp.MemberCount
 	for _, member := range w.MemberList {
@@ -423,7 +422,7 @@ func (w *Wechat) Send(apiURI string, body io.Reader, call Caller) (err error) {
 	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
 	resp, err := w.Client.Do(req)
 	if err != nil {
-		return
+		return err
 	}
 	defer resp.Body.Close()
 
