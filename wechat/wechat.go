@@ -311,7 +311,7 @@ func (w *Wechat) Login() (err error) {
 	if err = w.Send(apiUri, bytes.NewReader(data), newResp); err != nil {
 		return
 	}
-	w.Log.Printf("the newResp:%#v", newResp)
+	//w.Log.Printf("the newResp:%#v", newResp)
 	for _, contact := range newResp.ContactList {
 		w.InitContactList = append(w.InitContactList, contact)
 	}
@@ -330,7 +330,7 @@ func (w *Wechat) Login() (err error) {
 		w.SyncKeyStr += "|" + strconv.Itoa(item.Key) + "_" + strconv.Itoa(item.Val)
 
 	}
-	w.Log.Printf("the response:%+v\n", newResp)
+	//w.Log.Printf("the response:%+v\n", newResp)
 	w.Log.Printf("the sync key is %s\n", w.SyncKeyStr)
 	return
 }

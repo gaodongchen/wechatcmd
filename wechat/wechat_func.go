@@ -93,8 +93,8 @@ func (w *Wechat) getSyncMsg() (msgs []interface{}, err error) {
 	}
 	data, err := json.Marshal(params)
 
-	w.Log.Println(url)
-	w.Log.Println(string(data))
+	//w.Log.Println(url)
+	//w.Log.Println(string(data))
 
 	if err := w.Send(url, bytes.NewReader(data), syncResp); err != nil {
 		w.Log.Printf("w.Send(%s,%s,%+v) with error:%v", url, string(data), syncResp, err)
@@ -135,7 +135,7 @@ func (w *Wechat) SyncDaemon(msgIn chan Message) {
 			switch resp.Selector {
 			case 2, 3: //有消息,未知
 				msgs, err := w.getSyncMsg()
-				w.Log.Printf("the msgs:%+v\n", msgs)
+				//w.Log.Printf("the msgs:%+v\n", msgs)
 
 				if err != nil {
 					w.Log.Printf("w.getSyncMsg() error:%+v\n", err)
@@ -303,7 +303,7 @@ func (w *Wechat) SyncCheck() (resp SyncCheckResp, err error) {
 		return
 	}
 	Url.RawQuery = params.Encode()
-	w.Log.Println(Url.String())
+	//w.Log.Println(Url.String())
 
 	ret, err := w.Client.Get(Url.String())
 	if err != nil {
@@ -317,15 +317,15 @@ func (w *Wechat) SyncCheck() (resp SyncCheckResp, err error) {
 	if err != nil {
 		return
 	}
-	w.Log.Println(string(body))
+	//w.Log.Println(string(body))
 	resp = SyncCheckResp{}
 	reRedirect := regexp.MustCompile(`window.synccheck={retcode:"(\d+)",selector:"(\d+)"}`)
 	pmSub := reRedirect.FindStringSubmatch(string(body))
-	w.Log.Printf("the data:%+v", pmSub)
+	//w.Log.Printf("the data:%+v", pmSub)
 	if len(pmSub) != 0 {
 		resp.RetCode, err = strconv.Atoi(pmSub[1])
 		resp.Selector, err = strconv.Atoi(pmSub[2])
-		w.Log.Printf("the resp:%+v", resp)
+		//w.Log.Printf("the resp:%+v", resp)
 
 	} else {
 		err = errors.New("regex error in window.redirect_uri")
