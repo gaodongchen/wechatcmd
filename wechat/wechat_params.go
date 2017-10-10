@@ -43,6 +43,8 @@ type Message struct {
 	ToUserNickName       string
 	CreateTime           float64
 	MsgId                string
+	FromMemberUserName   string
+	FromMemberNickName   string
 }
 
 func (m Message) String() string {

@@ -168,6 +168,11 @@ func (w *Wechat) SyncDaemon(msgIn chan Message) {
 							//群消息，暂时不处理
 							if msg.FromUserNickName == "" {
 								contentSlice := strings.Split(msg.Content, ":<br/>")
+								fromUserName := contentSlice[0]
+								if user, ok := w.MemberMap[fromUserName]; ok {
+									msg.FromMemberUserName = user.UserName
+									msg.FromMemberNickName = user.NickName
+								}
 								msg.Content = contentSlice[1]
 
 							}
