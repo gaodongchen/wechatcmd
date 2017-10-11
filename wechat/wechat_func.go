@@ -118,22 +118,38 @@ func (w *Wechat) getSyncMsg() (msgs []interface{}, err error) {
 
 //同步守护goroutine
 func (w *Wechat) SyncDaemon(msgIn chan Message) {
+	var i int = 0
+	var synchost string
+	synchost = SyncHosts[i]
 	for {
 		w.lastCheckTs = time.Now()
-		resp, err := w.SyncCheck()
+		resp, err := w.SyncCheck(synchost)
 		if err != nil {
 			w.Log.Printf("w.SyncCheck() with error:%+v\n", err)
+			i++
+			if SyncHosts[i] != "" {
+				synchost = SyncHosts[i]
+			} else {
+				return
+			}
 			continue
 		}
 		switch resp.RetCode {
 		case 1100:
 			w.Log.Println("从微信上登出")
+			i++
+			if SyncHosts[i] != "" {
+				synchost = SyncHosts[i]
+			} else {
+				return
+			}
 		case 1101:
 			w.Log.Println("从其他设备上登陆")
 			return
 		case 0:
 			switch resp.Selector {
 			case 2, 3: //有消息,未知
+				i = 0
 				msgs, err := w.getSyncMsg()
 				//w.Log.Printf("the msgs:%+v\n", msgs)
 
@@ -218,8 +234,20 @@ func (w *Wechat) SyncDaemon(msgIn chan Message) {
 				w.GetContacts()
 			case 6: //可能是红包
 				w.Log.Println("请速去手机抢红包")
+				i++
+				if SyncHosts[i] != "" {
+					synchost = SyncHosts[i]
+				} else {
+					return
+				}
 			case 7:
 				w.Log.Println("在手机上操作了微信")
+				i++
+				if SyncHosts[i] != "" {
+					synchost = SyncHosts[i]
+				} else {
+					return
+				}
 			case 0:
 				w.Log.Println("无事件")
 			}
@@ -292,7 +320,7 @@ func (w *Wechat) TestCheck() (err error) {
 	return
 }
 
-func (w *Wechat) SyncCheck() (resp SyncCheckResp, err error) {
+func (w *Wechat) SyncCheck(host string) (resp SyncCheckResp, err error) {
 	params := url.Values{}
 	curTime := strconv.FormatInt(time.Now().Unix(), 10)
 	params.Set("r", curTime)
@@ -302,7 +330,8 @@ func (w *Wechat) SyncCheck() (resp SyncCheckResp, err error) {
 	params.Set("deviceid", w.Request.DeviceID)
 	params.Set("synckey", w.SyncKeyStr)
 	params.Set("_", curTime)
-	checkUrl := fmt.Sprintf("https://%s/cgi-bin/mmwebwx-bin/synccheck", w.SyncHost)
+	//checkUrl := fmt.Sprintf("https://%s/cgi-bin/mmwebwx-bin/synccheck", w.SyncHost)
+	checkUrl := fmt.Sprintf("https://%s/cgi-bin/mmwebwx-bin/synccheck", host)
 	Url, err := url.Parse(checkUrl)
 	if err != nil {
 		return
