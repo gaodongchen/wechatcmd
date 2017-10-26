@@ -20,8 +20,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/skratchdot/open-golang/open"
+	//"github.com/skratchdot/open-golang/open"
 )
 
 const (
@@ -151,6 +150,21 @@ func (w *Wechat) WaitForLogin() (err error) {
 	return
 }
 
+func (w *Wechat) WaitForLoginWithoutQR() (err error) {
+
+	defer os.Remove(w.QrImagePath)
+	w.Log.Println("扫描二维码登陆....")
+	code, tip := "", 1
+	for code != "200" {
+		w.RedirectedUri, code, tip, err = w.waitToLogin(w.Uuid, tip)
+		if err != nil {
+			err = fmt.Errorf("二维码登陆失败：%s", err.Error())
+			return
+		}
+	}
+	return
+}
+
 func (w *Wechat) waitToLogin(uuid string, tip int) (redirectUri, code string, rt int, err error) {
 	loginUri := fmt.Sprintf("https://login.weixin.qq.com/cgi-bin/mmwebwx-bin/login?tip=%d&uuid=%s&_=%s", tip, uuid, time.Now().Unix())
 	rt = tip
@@ -226,7 +240,7 @@ func (w *Wechat) GetQR() (err error) {
 		return
 	}
 
-	return open.Start(w.QrImagePath)
+	return nil //open.Start(w.QrImagePath)
 
 }
 

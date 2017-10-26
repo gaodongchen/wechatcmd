@@ -120,6 +120,7 @@ func (w *Wechat) getSyncMsg() (msgs []interface{}, err error) {
 func (w *Wechat) SyncDaemon(msgIn chan Message) {
 	var i int = 0
 	var synchost string
+	var hostLen int = len(SyncHosts)
 	synchost = SyncHosts[i]
 	for {
 		w.lastCheckTs = time.Now()
@@ -127,6 +128,9 @@ func (w *Wechat) SyncDaemon(msgIn chan Message) {
 		if err != nil {
 			w.Log.Printf("w.SyncCheck() with error:%+v\n", err)
 			i++
+			if hostLen <= i {
+				return
+			}
 			if SyncHosts[i] != "" {
 				synchost = SyncHosts[i]
 			} else {
@@ -138,6 +142,9 @@ func (w *Wechat) SyncDaemon(msgIn chan Message) {
 		case 1100:
 			w.Log.Println("从微信上登出")
 			i++
+			if hostLen <= i {
+				return
+			}
 			if SyncHosts[i] != "" {
 				synchost = SyncHosts[i]
 			} else {
@@ -235,6 +242,9 @@ func (w *Wechat) SyncDaemon(msgIn chan Message) {
 			case 6: //可能是红包
 				w.Log.Println("请速去手机抢红包")
 				i++
+				if hostLen <= i {
+					return
+				}
 				if SyncHosts[i] != "" {
 					synchost = SyncHosts[i]
 				} else {
@@ -243,6 +253,9 @@ func (w *Wechat) SyncDaemon(msgIn chan Message) {
 			case 7:
 				w.Log.Println("在手机上操作了微信")
 				i++
+				if hostLen <= i {
+					return
+				}
 				if SyncHosts[i] != "" {
 					synchost = SyncHosts[i]
 				} else {
