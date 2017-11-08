@@ -162,6 +162,7 @@ func (w *Wechat) SyncDaemon(msgIn chan Message) {
 
 				if err != nil {
 					w.Log.Printf("w.getSyncMsg() error:%+v\n", err)
+					return
 				}
 
 				for _, m := range msgs {
@@ -268,7 +269,8 @@ func (w *Wechat) SyncDaemon(msgIn chan Message) {
 			w.Log.Printf("the resp:%+v", resp)
 			time.Sleep(time.Second * 4)
 
-			continue
+			//continue
+			return
 		}
 
 		if time.Now().Sub(w.lastCheckTs).Seconds() <= 20 {
